@@ -8,8 +8,6 @@ import { useNavigate } from 'react-router-dom';
 function Confirmed() {
   const { tickets, ticketsError } = useTicket();
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     if (ticketsError) {
     }
