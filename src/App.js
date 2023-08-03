@@ -15,6 +15,7 @@ import { UserProvider } from './contexts/UserContext';
 
 import useToken from './hooks/useToken';
 import Confirmed from './pages/Dashboard/Payment/Confirmed';
+import Booking from './pages/Dashboard/Hotel/Booking';
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
                 <Route path="payment" element={<Payment />} />
                 <Route path="payment/confirmed" element={<Confirmed />} />
                 <Route path="hotel" element={<Hotel />} />
+                <Route path="hotel/booking" element={<Booking />} />
                 <Route path="activities" element={<Activities />} />
                 <Route path="certificate" element={<Certificate />} />
                 <Route index path="*" element={<Navigate to="/dashboard/subscription" />} />
