@@ -1,23 +1,16 @@
-import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
 
-export const PaymentInfoContainer = styled.div`
+export default function PaymentSummaryContainer({ info }) {
+  return (
+    <PaymentSummaryBox>
+      <TitleSummary>{info.remote === 'Online' ? info.remote : info.remote + ' ' + info.hotel}</TitleSummary>
+      <PriceSummary> {info.price}</PriceSummary>
+    </PaymentSummaryBox>
+  );
+}
 
-`;
-
-export const StyledTypography = styled(Typography)`
-  margin-bottom: 30px!important;
-`;
-
-export const StyledTitleText = styled(Typography)`
-  font-weight: 400!important;
-  font-size: 20px!important;
-  line-height: 24px!important;
-  margin-bottom: 20px!important;
-  color: #8E8E8E;
-`;
-
-export const PaymentSummaryContainer = styled.div`
+const PaymentSummaryBox = styled.div`
     min-width: 290px;
     width: 290px;
     min-height: 108px;
@@ -31,7 +24,7 @@ export const PaymentSummaryContainer = styled.div`
     margin-bottom: 25px;
 `;
 
-export const TitleSummary = styled(Typography)`
+const TitleSummary = styled(Typography)`
   font-weight: 400!important;
   font-size: 16px!important;
   line-height: 19px!important;
@@ -39,7 +32,7 @@ export const TitleSummary = styled(Typography)`
   color: #454545;
 `;
 
-export const PriceSummary = styled(Typography)`
+const PriceSummary = styled(Typography)`
   font-weight: 400!important;
   font-size: 14px!important;
   line-height: 17px!important;
