@@ -12,7 +12,7 @@ export default function PaymentInfo() {
       <StyledTitleText>Ingresso escolhido</StyledTitleText>
       <PaymentSummaryContainer info={info} />
       <StyledTitleText>Pagamento</StyledTitleText>
-      <CreditCard />
+      <CreditCard ticketId = {info.id}/>
     </>
   );
 }

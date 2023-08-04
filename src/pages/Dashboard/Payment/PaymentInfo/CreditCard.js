@@ -1,12 +1,72 @@
-import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import Input from '../../../../components/Form/Input';
 import Chip from '../../../../assets/images/chip.png'; 
+import { useForm } from '../../../../hooks/useForm';
+import { toast } from 'react-toastify';
+import InfoValidations from './InfoValidations';
+import { ErrorMsg } from '../../../../components/PersonalInformationForm/ErrorMsg';
+import useToken from '../../../../hooks/useToken';
+import { payTicket } from '../../../../services/payment-infoApi';
+import { Typography } from '@material-ui/core';
 
-export default function CreditCard() {
+export default function CreditCard({ ticketId }) {
+  const token = useToken();
+
+  const {
+    handleSubmit,
+    handleChange,
+    data,
+    errors,
+  } = useForm({
+    validations: InfoValidations,
+
+    onSubmit: async(data) => {
+      const cardIssuer = getCreditCardIssuer(data.card);
+
+      const body = {
+        ticketId: ticketId,
+        cardData: {
+          issuer: cardIssuer,  
+          number: parseInt(data.card?.replaceAll(' ', '')),
+          name: data.name,  
+          expirationDate: data.valid, 
+          cvv: parseInt(data.cvc)
+        }
+      };
+      try {
+        await payTicket(body, token);
+        toast('Informações salvas com sucesso!');
+      } catch (err) {
+        toast('Não foi possível salvar suas informações!');
+      }
+    },
+
+    initialValues: { card: '', name: '', valid: '', cvc: '' },
+  });
+
+  function getCreditCardIssuer(cardNumber) {
+    const trimmedNumber = cardNumber.replace(/\s/g, '');
+
+    if (/^4/.test(trimmedNumber)) {
+      return 'Visa';
+    } else if (/^5/.test(trimmedNumber)) {
+      return 'MasterCard';
+    } else if (/^3[47]/.test(trimmedNumber)) {
+      return 'American Express (Amex)';
+    } else if (/^6(?:011|5|4[4-9]|22(?:1(?:2[6-9]|[3-9]\d)|[2-8]\d\d|9(?:[01]\d|2[0-5])))|7(?:[0-9]{2})/.test(trimmedNumber)) {
+      return 'Discover';
+    } else if (/^3(?:0[0-5]|[68])/.test(trimmedNumber)) {
+      return 'Diners Club';
+    } else if (/^35(?:2[89]|[3-8]\d)/.test(trimmedNumber)) {
+      return 'JCB';
+    } else {
+      return 'Desconhecida';
+    }
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}> 
       <CreditInfoContainer>
       
         <CreditCardPlaceholder>
@@ -26,25 +86,53 @@ export default function CreditCard() {
           <Input
             label="Card Number"
             name = "number"
+            type= "text"
             fullWidth
-
+            value= {data?.card || ''}
+            maxLength="16"
+            mask='9999 9999 9999 9999'
+            onChange={handleChange('card')}
           />
+          <StyledEgText>E.g.: 49..., 51..., 36..., 37...</StyledEgText>
+          {errors.card && <ErrorMsg>{errors.card}</ErrorMsg>}
+          
           <Input
             label="Name"
             name = "name"
+            type = "text"
             fullWidth
+            onChange={handleChange('name')}
+            value= {data?.name || ''}
           />
+          {errors.name && <ErrorMsg>{errors.name}</ErrorMsg>} 
 
           <InputWrapper>
-            <Input
-              label="Valid Thru"
-              name = "valid"
-            />
+            <div>
+              <Input
+                label="Valid Thru"
+                name = "valid"
+                type = "text"
+                fullWidth
+                onChange={handleChange('valid')}
+                value= {data?.valid || ''}
+                mask='99/99'
+              />
+              {errors.valid && <ErrorMsg>{errors.valid}</ErrorMsg>} 
+            </div>
 
-            <Input
-              label="CVC"
-              name = "cvc"
-            />
+            <div>
+              <Input
+                label="CVC"
+                name = "cvc"
+                type = "text"
+                maxLength="3"
+                mask='999'
+                onChange={handleChange('cvc')}
+                value= {data?.cvc || ''}
+              />
+              {errors.cvc && <ErrorMsg>{errors.cvc}</ErrorMsg>} 
+            </div>
+
           </InputWrapper>
           
         </InputContainer>
@@ -120,7 +208,11 @@ const InputWrapper = styled.div`
     width: 100%;
   }
   @media (max-width: 600px) {
-
+    flex-direction: column;
+    >div:first-child{
+    margin-right:0px;
+    width: 100%;
+  }
   }
 `;
 
@@ -150,3 +242,12 @@ const ValidContainer = styled.div`
     font-size: 22px;
   }
 `;
+
+const StyledEgText = styled(Typography)`
+  font-weight: 300!important;
+  font-size: 15px!important;
+  line-height: 24px!important;
+  padding-left: 2px;
+  color: #8E8E8E;
+`;
+
