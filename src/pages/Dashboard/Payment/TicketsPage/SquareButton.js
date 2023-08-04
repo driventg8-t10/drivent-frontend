@@ -1,16 +1,18 @@
 import styled from 'styled-components';
 
 export default function SquareButton(props) {
-  const { text, price, isSelected, onClick = null, plusChar = false } = props;
+  const { text, price, isSelected, onClick = null, plusChar = false, disabled = false } = props;
   return (
-    <StyledButton onClick={onClick} isSelected={isSelected}>
+    <StyledButton onClick={onClick} isSelected={isSelected} disabled={disabled}>
       <p>{text}</p>
-      <span>{plusChar && '+ '}R$ {price}</span>
+      <span>
+        {plusChar && '+ '}R$ {price}
+      </span>
     </StyledButton>
   );
 }
 
-const StyledButton = styled.div`
+const StyledButton = styled.button`
   width: 145px;
   height: 145px;
   border-radius: 20px;

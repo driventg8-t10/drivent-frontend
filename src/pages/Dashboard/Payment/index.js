@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { getTicketTypes, getUserTicket } from '../../../services/ticketApi';
 import useToken from '../../../hooks/useToken';
-import TicketsPage from '../../../components/TicketsPage';
+import TicketsPage from './TicketsPage';
 
 export default function Payment() {
-  const [ticketType, setTicketType] = useState(null);
+  const [ticketTypeArr, setTicketTypeArr] = useState(null);
   const [ticket, setTicket] = useState(null);
   const token = useToken();
 
@@ -21,18 +21,32 @@ export default function Payment() {
 
     getTicketTypes(token)
       .then((data) => {
-        setTicketType(data[0]);
+        setTicketTypeArr(data);
       })
       .catch((err) => {
-        setTicketType(null);
+        setTicketTypeArr(null);
       });
-  }, []);
+  }, [ticket]);
 
-  if (!ticketType) {
+  if (!ticketTypeArr) {
     return 'Carregando...';
   }
 
-  if (!ticket) {
-    return <TicketsPage ticketType={ticketType} />;
+  if (ticketTypeArr.length === 0) {
+    return 'Sem ticketType cadastrado';
   }
+
+  if (!ticket) {
+    return <TicketsPage setTicket={setTicket} ticketTypeArr={ticketTypeArr} />;
+  }
+
+  if (ticket.status === 'RESERVED') {
+    return 'RESERVADO: TELA DE CARTÃO AQUI';
+  }
+
+  if (ticket.status === 'PAID') {
+    return 'PAGO: TELA DE PAGO AQUI';
+  }
+
+  return 'Ops... Isso não era para ter acontecido';
 }
