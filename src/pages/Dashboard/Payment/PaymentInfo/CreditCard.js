@@ -9,10 +9,11 @@ import { ErrorMsg } from '../../../../components/PersonalInformationForm/ErrorMs
 import useToken from '../../../../hooks/useToken';
 import { payTicket } from '../../../../services/payment-infoApi';
 import { Typography } from '@material-ui/core';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreditCard({ ticketId }) {
   const token = useToken();
-
+  const navigate = useNavigate();
   const {
     handleSubmit,
     handleChange,
@@ -36,7 +37,8 @@ export default function CreditCard({ ticketId }) {
       };
       try {
         await payTicket(body, token);
-        toast('Informações salvas com sucesso!');
+        toast('Pagamento realizado com sucesso!');
+        navigate('/dashboard/payment/confirmed');
       } catch (err) {
         toast('Não foi possível salvar suas informações!');
       }
@@ -68,15 +70,14 @@ export default function CreditCard({ ticketId }) {
   return (
     <form onSubmit={handleSubmit}> 
       <CreditInfoContainer>
-      
         <CreditCardPlaceholder>
           <img src={Chip} alt="Chip"/>
-          <NumberContainer> <h4 > •••• ••7• 5••• ••••</h4> </NumberContainer>
+          <NumberContainer> <h4 > {data?.card || '•••• •••• •••• ••••'} </h4> </NumberContainer>
           <div>
-            <h5>YOUR NAME HERE</h5>
+            <h5>{data?.name.toUpperCase() || 'YOUR NAME HERE'}</h5>
             <ValidContainer>
               <h6>valid thru</h6>
-              <p>••/••</p>
+              <p>{data?.valid || '••/••'}</p>
             </ValidContainer>
           </div>
 
@@ -176,11 +177,15 @@ const CreditCardPlaceholder = styled.div`
     align-items: end;
   }
   h5{
+    width: 190px;
     color: white;
-    font-size: 35;
+    font-size: 15px;
     font-family: Arial, Helvetica, sans-serif;
     margin-right: 10px;
     padding-bottom: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   @media (max-width: 600px) {
@@ -224,7 +229,7 @@ const NumberContainer = styled.div`
   >h4 {
     line-height: 35px;
     color: white;
-    font-size: 34px;
+    font-size: 25px;
     font-family: Arial, Helvetica, sans-serif;
   }
 `;
@@ -233,13 +238,18 @@ const ValidContainer = styled.div`
   color: white;
   font-size: 16px;
   font-family: Arial, Helvetica, sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+
   >h6{
-    font-size: 12px;
+  font-size: 12px; 
+  overflow: hidden;
+white-space: nowrap;
   }
   >p{
     margin-top: 3px;
     text-align: center;
-    font-size: 22px;
+    font-size: 17px;
   }
 `;
 
