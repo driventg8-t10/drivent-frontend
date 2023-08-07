@@ -6,15 +6,16 @@ import usePaymentSummary from '../../../../hooks/api/usePaymentSummary';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function PaymentInfo() {
+export default function PaymentInfo(props) {
+  const { updateTicketPage } = props;
   const info = usePaymentSummary();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    if(info.status === 'PAID') {
-      navigate('/dashboard/payment/confirmed');
-    }
-  }, [info]);
+  // useEffect(() => {
+  //   if(info.status === 'PAID') {
+  //     navigate('/dashboard/payment/confirmed');
+  //   }
+  // }, [info]);
 
   return (
     <>
@@ -22,7 +23,7 @@ export default function PaymentInfo() {
       <StyledTitleText>Ingresso escolhido</StyledTitleText>
       <PaymentSummaryContainer info={info} />
       <StyledTitleText>Pagamento</StyledTitleText>
-      <CreditCard ticketId = {info.id}/>
+      <CreditCard updateTicketPage={updateTicketPage} ticketId = {info.id}/>
     </>
   );
 }

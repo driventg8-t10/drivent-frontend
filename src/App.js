@@ -40,14 +40,11 @@ export default function App() {
               >
                 <Route path="subscription" element={<FillSubscription />} />
                 <Route path="payment" element={<Payment />} />
-                <Route path="payment/confirmed" element={<Confirmed />} />
                 <Route path="hotel" element={<Hotel />} />
                 <Route path="hotel/booking" element={<Booking />} />
                 <Route path="activities" element={<Activities />} />
                 <Route path="certificate" element={<Certificate />} />
                 <Route index path="*" element={<Navigate to="/dashboard/subscription" />} />
-
-                <Route path="payment/info" element={<PaymentInfo />} />
 
               </Route>
             </Routes>

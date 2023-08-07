@@ -11,7 +11,7 @@ import { payTicket } from '../../../../services/payment-infoApi';
 import { Typography } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 
-export default function CreditCard({ ticketId }) {
+export default function CreditCard({ updateTicketPage, ticketId }) {
   const token = useToken();
   const navigate = useNavigate();
   const {
@@ -38,7 +38,8 @@ export default function CreditCard({ ticketId }) {
       try {
         await payTicket(body, token);
         toast('Pagamento realizado com sucesso!');
-        navigate('/dashboard/payment/confirmed');
+        // navigate('/dashboard/payment/confirmed');
+        updateTicketPage();
       } catch (err) {
         toast('Não foi possível salvar suas informações!');
       }
