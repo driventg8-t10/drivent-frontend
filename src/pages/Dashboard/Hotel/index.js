@@ -141,20 +141,20 @@ export default function Hotel() {
 
   function getErrorMessage() {
     if (!userTicket) {
-      return '';
+      return 'Você precisa ter confirmado o pagamento antes de fazer a escolha de hospedagem.';
     }
-
+  
     const { TicketType, status } = userTicket;
-    if (error === 402) {
+    if (error) {
       if (TicketType?.isRemote || !TicketType?.includesHotel) {
         return 'Sua modalidade de ingresso não inclui hospedagem. Prossiga para a escolha de atividades.';
-      } else if (status === 'RESERVED') {
+      } else if (status === 'RESERVED' || error.status === 404) {
         return 'Você precisa ter confirmado o pagamento antes de fazer a escolha de hospedagem.';
       }
     }
     return '';
-  };
-  
+  }
+
   const errorMessage = getErrorMessage();
 
   useEffect(async() => {
@@ -162,6 +162,7 @@ export default function Hotel() {
       const userTicket = await getUserTicket(token);
       setUserTicket(userTicket);
     } catch (error) {
+      setError(error.response.status);
       return error;
     }
 
@@ -193,10 +194,8 @@ export default function Hotel() {
   return (
     <>
       <StyledTypography variant="h4">Escolha de Hotel e Quarto</StyledTypography>
-      {error === 402 ? (
-        <ErrorContainer>
-          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-        </ErrorContainer>
+      {error ? (
+        <ErrorContainer>{errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}</ErrorContainer>
       ) : (
         <Container>
           <SubTitle>Primeiro, escolha seu hotel</SubTitle>
