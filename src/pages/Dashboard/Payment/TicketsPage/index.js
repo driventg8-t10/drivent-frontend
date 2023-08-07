@@ -3,20 +3,22 @@ import SquareButton from './SquareButton';
 import { useEffect, useState } from 'react';
 import useToken from '../../../../hooks/useToken';
 import { postReserveTicket } from '../../../../services/ticketApi';
+import formatTicketType from './FormatTicketType';
 
 export default function TicketsPage(props) {
-  const { ticketTypeArr, setTicket } = props;
-  const [ticketTypesAuxArr, setTicketTypeAuxArr] = useState(ticketTypeArr);
+  const { ticketTypeArr, updateTicketPage } = props;
   const [presenceType, setPresenceType] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [accomodationType, setAccomodationType] = useState('');
   const [totalPrice, setTotalPrice] = useState(0);
+  const ticketTypeResult = formatTicketType(ticketTypeArr);
+  const [ticketTypeObj, setTicketTypeObj] = useState(ticketTypeResult);
   const token = useToken();
 
   useEffect(() => {
     let price = 0;
-    presenceType === 'online' ? (price += 100) : (price += ticketTypeArr[0].price);
-    accomodationType === 'hotel' && (price += 350);
+    presenceType === 'online' ? (price += Number(ticketTypeObj.online)) : (price += Number(ticketTypeObj.presencial));
+    accomodationType === 'hotel' && (price += Number(ticketTypeObj.presencialComHotel));
     setTotalPrice(price);
   }, [presenceType, accomodationType]);
 
@@ -36,9 +38,8 @@ export default function TicketsPage(props) {
     setIsLoading(true);
     await postReserveTicket(token, arr[0].id)
       .then((res) => {
-        console.log(res);
-        setTicket(res);
         setIsLoading(false);
+        updateTicketPage();
       })
       .catch((err) => {
         console.log(err.response.data);
@@ -51,31 +52,29 @@ export default function TicketsPage(props) {
       <h1>Ingresso e pagamento</h1>
       <h2>Primeiro, escolha sua modalidade de ingresso</h2>
       <ButtonsContainer>
-        {ticketTypeArr.some((ticketType) => !ticketType.isRemote) && (
+        {ticketTypeObj.presencial && (
           <>
             <SquareButton
               onClick={() => {
                 setPresenceType('presencial');
-                setTicketTypeAuxArr(ticketTypeArr.filter((ticketType) => !ticketType.isRemote));
                 setAccomodationType('');
               }}
               text="Presencial"
-              price={ticketTypeArr[0].price}
+              price={ticketTypeObj.presencial}
               isSelected={presenceType === 'presencial'}
               disabled={isLoading}
             />
           </>
         )}{' '}
-        {ticketTypeArr.some((ticketType) => ticketType.isRemote) && (
+        {ticketTypeObj.online && (
           <>
             <SquareButton
               onClick={() => {
                 setPresenceType('online');
-                setTicketTypeAuxArr(ticketTypeArr.filter((ticketType) => ticketType.isRemote));
                 setAccomodationType('');
               }}
               text="Online"
-              price={100}
+              price={ticketTypeObj.online}
               isSelected={presenceType === 'online'}
               disabled={isLoading}
             />
@@ -86,13 +85,13 @@ export default function TicketsPage(props) {
         <>
           <h2>Ótimo! Agora escolha sua modalidade de hospedagem</h2>
           <ButtonsContainer>
-            {ticketTypesAuxArr.some((ticketType) => ticketType.includesHotel === true) ? (
+            {ticketTypeObj.presencialComHotel ? (
               <>
                 <SquareButton
                   onClick={() => setAccomodationType('noHotel')}
                   text="Sem Hotel"
                   plusChar={true}
-                  price={0}
+                  price={ticketTypeObj.presencialSemHotel}
                   isSelected={accomodationType === 'noHotel'}
                   disabled={isLoading}
                 />
@@ -100,7 +99,7 @@ export default function TicketsPage(props) {
                   onClick={() => setAccomodationType('hotel')}
                   text="Com Hotel"
                   plusChar={true}
-                  price={350}
+                  price={ticketTypeObj.presencialComHotel}
                   isSelected={accomodationType === 'hotel'}
                   disabled={isLoading}
                 />
@@ -145,7 +144,7 @@ const ReserveButton = styled.button`
   font-family: Roboto;
   font-size: 14px;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: normal;
   cursor: pointer;
 `;
