@@ -17,6 +17,7 @@ export default function usePaymentSummary() {
     promise
       .then((res) => {
         const updatedInfo = {
+          id: res.id,
           price: `R$ ${res.TicketType.price}`,
           hotel: res.TicketType.includesHotel === true ? 'Com Hotel' : 'Sem Hotel',
           remote: !res.TicketType.isRemote ? 'Presencial +' : 'Online',
