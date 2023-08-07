@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import useToken from '../../../../hooks/useToken';
 import { postReserveTicket } from '../../../../services/ticketApi';
 import formatTicketType from './FormatTicketType';
+import { toast } from 'react-toastify';
 
 export default function TicketsPage(props) {
   const { ticketTypeArr, updateTicketPage } = props;
@@ -39,6 +40,7 @@ export default function TicketsPage(props) {
     await postReserveTicket(token, arr[0].id)
       .then((res) => {
         setIsLoading(false);
+        toast('Ticket reservado com sucesso!');
         updateTicketPage();
       })
       .catch((err) => {
