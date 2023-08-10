@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import Loader from 'react-loader-spinner';
+import { TailSpin } from 'react-loader-spinner';
 
 export default function LoadingPage() {
   return (
     <LoadingContainer>
-      <Loader type="TailSpin" height={120} width={120} />
+      <TailSpin color="#eee" height={50} width={120} />
     </LoadingContainer>
   );
 }

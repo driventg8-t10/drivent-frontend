@@ -13,6 +13,7 @@ import EventInfoContext from '../../contexts/EventInfoContext';
 import UserContext from '../../contexts/UserContext';
 
 import useSignIn from '../../hooks/api/useSignIn';
+import GitHubButton from '../../components/OAuth/GitHub';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -24,7 +25,7 @@ export default function SignIn() {
   const { setUserData } = useContext(UserContext);
 
   const navigate = useNavigate();
-  
+
   async function submit(event) {
     event.preventDefault();
 
@@ -36,7 +37,26 @@ export default function SignIn() {
     } catch (err) {
       toast('Não foi possível fazer o login!');
     }
-  } 
+  }
+
+  async function signInGitHub() {
+    const url = 'https://github.com/login/oauth/authorize';
+
+    const params = {
+      redirect_uri: process.env.REACT_APP_REDIRECT_URI,
+      client_id: process.env.REACT_APP_CLIENT_ID,
+      scope: 'user, user:email',
+      response_type: 'code',
+    };
+
+    const queryParams = new URLSearchParams(params);
+
+    try {
+      window.open(`${url}?${queryParams}`, '_blank');
+    } catch (error) {
+      toast('Não foi possível fazer o login!');
+    }
+  }
 
   return (
     <AuthLayout background={eventInfo.backgroundImageUrl}>
@@ -47,9 +67,18 @@ export default function SignIn() {
       <Row>
         <Label>Entrar</Label>
         <form onSubmit={submit}>
-          <Input label="E-mail" type="text" fullWidth value={email} onChange={e => setEmail(e.target.value)} />
-          <Input label="Senha" type="password" fullWidth value={password} onChange={e => setPassword(e.target.value)} />
-          <Button type="submit" color="primary" fullWidth disabled={loadingSignIn}>Entrar</Button>
+          <Input label="E-mail" type="text" fullWidth value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input
+            label="Senha"
+            type="password"
+            fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button type="submit" color="primary" fullWidth disabled={loadingSignIn}>
+            Entrar
+          </Button>
+          <GitHubButton fullWidth color="#656565" type="button" onClick={signInGitHub} />
         </form>
       </Row>
       <Row>
