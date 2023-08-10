@@ -52,7 +52,7 @@ export default function SignIn() {
     const queryParams = new URLSearchParams(params);
 
     try {
-      window.open(`${url}?${queryParams}`, '_blank');
+      window.location.href= `${url}?${queryParams}`;
     } catch (error) {
       toast('Não foi possível fazer o login!');
     }
