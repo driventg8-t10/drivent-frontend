@@ -187,6 +187,7 @@ export default function Hotel() {
   useEffect(async() => {
     if (hotelId) {
       const rooms = await getRoomsByHotelId(token, hotelId);
+      console.log(rooms);
       dispatch({ type: TYPES.UPDATE_ROOMS, payload: rooms.data });
     }
   }, [hotelId]);
