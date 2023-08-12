@@ -20,7 +20,7 @@ export default function formatTicketType(ticketTypeArr) {
   if (obj.presencialComHotel) {
     obj.presencialComHotel = `${obj.presencialComHotel.price - obj.presencial}`;
   } else {
-    obj.presencial = false;
+    obj.presencialComHotel = false;
   }
 
   return obj;
