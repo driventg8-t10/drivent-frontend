@@ -105,15 +105,15 @@ export default function PersonalInformationForm() {
 
   async function handleCepChanges(event) {
     const { name, value } = event.target;
-
+    
     const valueWithoutMask = value.replace('-', '');
-
+    
     if (isValidCep(valueWithoutMask)) {
       const newDataValues = {
         ...data,
         [name]: value
       };
-
+      
       setDynamicInputIsLoading(true);
       const cepData = await getCep(valueWithoutMask);
       setDynamicInputIsLoading(false);
