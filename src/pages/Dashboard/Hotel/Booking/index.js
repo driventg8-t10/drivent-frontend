@@ -46,7 +46,7 @@ function Booking() {
 
   return (
     <div>
-      <StyledTypography variant="h4">Ingresso e Pagamento</StyledTypography>
+      <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
       <SubTitle>Você já escolheu seu quarto:</SubTitle>
       <HotelCard>
         <HotelImage>
