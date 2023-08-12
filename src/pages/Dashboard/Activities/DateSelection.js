@@ -41,7 +41,6 @@ export default function DateSelection( { datesArray, setSelected, selectedDate }
 
   function selectButton(button) {
     setSelected([button[1]]);
-    console.log(convertToFormattedDate(button[0]));
   }
 
   return (
