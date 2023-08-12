@@ -87,8 +87,8 @@ export default function TicketsPage(props) {
         <>
           <h2>Ótimo! Agora escolha sua modalidade de hospedagem</h2>
           <ButtonsContainer>
-            {ticketTypeObj.presencialComHotel ? (
-              <>
+            <>
+              {ticketTypeObj.presencialSemHotel && (
                 <SquareButton
                   onClick={() => setAccomodationType('noHotel')}
                   text="Sem Hotel"
@@ -97,6 +97,8 @@ export default function TicketsPage(props) {
                   isSelected={accomodationType === 'noHotel'}
                   disabled={isLoading}
                 />
+              )}
+              {ticketTypeObj.presencialComHotel && (
                 <SquareButton
                   onClick={() => setAccomodationType('hotel')}
                   text="Com Hotel"
@@ -105,19 +107,8 @@ export default function TicketsPage(props) {
                   isSelected={accomodationType === 'hotel'}
                   disabled={isLoading}
                 />
-              </>
-            ) : (
-              <>
-                <SquareButton
-                  onClick={() => setAccomodationType('noHotel')}
-                  text="Sem Hotel"
-                  plusChar={true}
-                  price={0}
-                  isSelected={accomodationType === 'noHotel'}
-                  disabled={isLoading}
-                />
-              </>
-            )}
+              )}
+            </>
           </ButtonsContainer>
         </>
       )}
