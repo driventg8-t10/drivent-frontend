@@ -13,7 +13,10 @@ export const ActivityContainer = styled.div`
         border: 1px #D7D7D7 solid;
         height: 392px;
         padding: 10px;
+        overflow: auto;
+        overflow-x:hidden;
     }
+    
 `;
 
 export const PlaceText = styled(Typography)`
@@ -25,8 +28,8 @@ export const PlaceText = styled(Typography)`
 
 export const TalkContainer = styled.div` 
   display: flex;
-  background-color: ${(props) => !props.subscribed ? '#F1F1F1' : '#D0FFDB'};
-  justify-content: space-between;
+  background-color: ${(props) => props.vacancy === 'Inscrito' ? '#D0FFDB' : '#F1F1F1'};
+  justify-content: space-between; 
   border-radius: 5px;
   height: ${(props) => props.size ? `${props.size}px` : '80px'};
   margin-bottom: 10px;
@@ -39,8 +42,8 @@ export const TalkContainer = styled.div`
     display: flex; flex-direction: column; 
     justify-content: center; align-items: center;
     border-left: 1px solid;
-    border-color: ${(props) => !props.subscribed ? '#CFCFCF' : '#99E8A1'};
-    color: ${(props) => !props.isFull ? '#078632' : '#CC6666'};;
+    border-color: ${(props) => props.vacancy === 'Inscrito' ? '#99E8A1' : '#CFCFCF'};
+    color: ${(props) => props.vacancy === 'Esgotado' ? '#CC6666' : '#078632'};
     padding-left: 10px;
     min-width: 50px;
     }
@@ -69,10 +72,17 @@ margin-top: 5px!important;
 
 export const IconEnter = styled(CgEnter)`
  font-size: 20px;
+ :hover{
+  cursor: pointer;
+  transform: scale(1.1); 
+ }
 `;
 
 export const IconSubscribed = styled(AiOutlineCheckCircle)`
  font-size: 22px;
+ :hover{
+  cursor: pointer;
+ }
 `;
 
 export const IconFull = styled(AiOutlineCloseCircle)`

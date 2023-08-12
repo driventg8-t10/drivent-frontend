@@ -9,3 +9,13 @@ export async function getActivities(token, date) {
 
   return response.data;
 }
+
+export async function subscribeActivity(body, token) {
+  const response = await api.post('/activity', body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}

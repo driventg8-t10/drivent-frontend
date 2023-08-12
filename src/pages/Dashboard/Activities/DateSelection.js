@@ -5,12 +5,10 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { getActivities } from '../../../services/activityApi';
 import { toast } from 'react-toastify';
-import useToken from '../../../hooks/useToken';
 
-export default function DateSelection( { datesArray, setSelected, selectedDate, setActivities } ) {
-  //const formattedDates = datesInRange.map(date => date.toISOString().split('T')[0]);
+export default function DateSelection( { token, datesArray, setSelected, selectedDate, setActivities, convertToFormattedDate } ) {
   const [showDates, setDates] = useState([]);
-  const token = useToken();
+  const [showTitle, setShowTitle] = useState('show');
   
   useEffect(() => {
     if(datesArray !== [] || datesArray !== undefined) {
@@ -29,22 +27,14 @@ export default function DateSelection( { datesArray, setSelected, selectedDate, 
     return [date.toString(), formattedDate];
   }
 
-  const convertToFormattedDate = (dateString) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-  
-    return `${year}-${month}-${day}`;
-  };
-
   function selectButton(button) {
-    setSelected([button[1]]);
     const dateToSend = String(convertToFormattedDate(button[0]));
     const promise = getActivities(token, dateToSend);
     promise
       .then((res) => {
+        setSelected(button);    
         setActivities(res);
+        setShowTitle('hide');
       })
       .catch((err) => {
         toast('Não foi possível buscar as atividades.');
@@ -53,7 +43,10 @@ export default function DateSelection( { datesArray, setSelected, selectedDate, 
 
   return (
     <>
-      <StyledTitleText>Primeiro, filtre pelo dia do evento: </StyledTitleText>
+      {
+        showTitle === 'show' && <StyledTitleText show={showTitle}>Primeiro, filtre pelo dia do evento: </StyledTitleText>
+      }
+
       <ButtonContainer>
         {
           showDates.map((e) => (

@@ -5,12 +5,15 @@ import ActivitySelection from './ActivitySelection';
 import { useEffect } from 'react';
 import { getEventInfo } from '../../../services/eventApi';
 import { useState } from 'react';
+import useToken from '../../../hooks/useToken';
 
 export default function Activities() {
   const [datesArray, setDate] = useState([]);
   const [selectedDate, setSelected] = useState([]);
   const [activities, setActivities] = useState([]);
+  const [subscribedReloadFlag, setFlag] = useState(0);
 
+  const token = useToken();
   useEffect(() => { 
     const info = getEventInfo();
     info
@@ -36,6 +39,15 @@ export default function Activities() {
     setDate(datesInRange);
   }
 
+  const convertToFormattedDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  };
+
   return (
     <>
       <StyledTypography variant="h4">Escolha as atividades</StyledTypography>
@@ -44,9 +56,18 @@ export default function Activities() {
         setSelected = {setSelected}
         selectedDate = {selectedDate}
         setActivities = {setActivities}
+        token = {token}
+        subscribedReloadFlag = {subscribedReloadFlag}
+        convertToFormattedDate = {convertToFormattedDate}
       />
       <ActivitySelection 
-        activities = {activities}  
+        activities = {activities}
+        token = {token} 
+        setFlag = {setFlag}
+        selectedDate = {selectedDate}
+        setActivities = {setActivities}
+        convertToFormattedDate = {convertToFormattedDate}
+ 
       />
     </>
   );
