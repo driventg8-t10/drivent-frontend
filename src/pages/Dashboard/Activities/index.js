@@ -9,6 +9,7 @@ import { useState } from 'react';
 export default function Activities() {
   const [datesArray, setDate] = useState([]);
   const [selectedDate, setSelected] = useState([]);
+  const [activities, setActivities] = useState([]);
 
   useEffect(() => { 
     const info = getEventInfo();
@@ -42,8 +43,11 @@ export default function Activities() {
         datesArray = {datesArray}
         setSelected = {setSelected}
         selectedDate = {selectedDate}
+        setActivities = {setActivities}
       />
-      <ActivitySelection />
+      <ActivitySelection 
+        activities = {activities}  
+      />
     </>
   );
 }

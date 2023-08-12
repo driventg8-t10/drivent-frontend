@@ -3,10 +3,14 @@ import { Typography } from '@material-ui/core';
 import MuiButton from '@material-ui/core/Button';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { getActivities } from '../../../services/activityApi';
+import { toast } from 'react-toastify';
+import useToken from '../../../hooks/useToken';
 
-export default function DateSelection( { datesArray, setSelected, selectedDate } ) {
+export default function DateSelection( { datesArray, setSelected, selectedDate, setActivities } ) {
   //const formattedDates = datesInRange.map(date => date.toISOString().split('T')[0]);
   const [showDates, setDates] = useState([]);
+  const token = useToken();
   
   useEffect(() => {
     if(datesArray !== [] || datesArray !== undefined) {
@@ -17,13 +21,8 @@ export default function DateSelection( { datesArray, setSelected, selectedDate }
 
   function translateDate(date) {
     const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-    const months = [
-      'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
-      'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
-    ];
   
     const dayOfWeek = daysOfWeek[date.getDay()];
-    const month = months[date.getMonth()];
   
     const day = String(date.getDate()).padStart(2, '0');
     const formattedDate = `${dayOfWeek}, ${day}/${(date.getMonth() + 1).toString().padStart(2, '0')}`;
@@ -41,6 +40,15 @@ export default function DateSelection( { datesArray, setSelected, selectedDate }
 
   function selectButton(button) {
     setSelected([button[1]]);
+    const dateToSend = String(convertToFormattedDate(button[0]));
+    const promise = getActivities(token, dateToSend);
+    promise
+      .then((res) => {
+        setActivities(res);
+      })
+      .catch((err) => {
+        toast('Não foi possível buscar as atividades.');
+      });
   }
 
   return (
