@@ -6,7 +6,6 @@ export const useForm = (options) => {
 
   const handleChange = (key, sanitizeFn) => (e) => {
     const value = sanitizeFn ? sanitizeFn(e.target.value) : e.target.value;
-
     setData({
       ...data,
       [key]: value,
@@ -15,6 +14,7 @@ export const useForm = (options) => {
 
   const customHandleChange = (key, sanitizeFn) => (inputValue) => {
     const value = sanitizeFn ? sanitizeFn(inputValue) : inputValue;
+
     setData({
       ...data,
       [key]: value,
