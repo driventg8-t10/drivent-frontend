@@ -32,7 +32,6 @@ export default function Activities() {
     const ticket = getUserTicket(token);
     ticket
       .then((res) => {
-        console.log(res);
         if(res.status === 'RESERVED') {
           setContent('No Payment');
           return 1;
